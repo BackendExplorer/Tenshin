@@ -16,7 +16,7 @@
 ## 📌 目次
 
 
-<hr style="border: 3px solid black;">
+---
 
 ## **📎 概要**
 - [概要](#概要)
