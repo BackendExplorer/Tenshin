@@ -4,7 +4,7 @@
 - Go 1.20以上  
 - Node.js 18.x以上  
 - npm または yarn  
-- Docker（任意）  
+- Git  
 
 ---
 
