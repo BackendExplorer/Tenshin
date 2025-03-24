@@ -1,3 +1,5 @@
+```mermaid
+
 sequenceDiagram
     autonumber
 
@@ -25,3 +27,6 @@ sequenceDiagram
     バックエンド-->>フロントエンド: ポケモン詳細データ (JSON)
 
     note over フロントエンド: Reactで詳細画面を表示
+
+
+```
