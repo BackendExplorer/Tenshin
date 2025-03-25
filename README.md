@@ -1,39 +1,38 @@
 ```mermaid
 sequenceDiagram
-    %% 登場人物
-    participant MainThread as メインスレッド
-    participant TCPServer as TCPサーバー
-    participant UDPServer as UDPサーバー
+    %% 登場人物の整理（役割ごと）
     participant Client as クライアント
-    participant CoreServer as サーバー
-    participant UDPHandler as UDP処理スレッド
+    participant TCPServer as TCPサーバー
+    participant MainServer as サーバー
+    participant UDPHandler as UDPサーバー処理
 
-    %% フェーズ1：サーバー起動
-    MainThread->>TCPServer: 起動
-    MainThread->>UDPServer: 起動
-    TCPServer->>CoreServer: クライアント待機状態にする
+    %% --- 起動フェーズ ---
+    Note over TCPServer, UDPHandler: サーバー起動
+    TCPServer->>MainServer: クライアント待機開始
+    UDPHandler->>MainServer: UDP受信待機開始
 
-    %% フェーズ2：クライアント接続
-    Client->>TCPServer: TCP接続要求
-    TCPServer->>CoreServer: 接続受付
-    CoreServer->>CoreServer: クライアント情報を登録
+    %% --- 接続フェーズ ---
+    Note over Client, TCPServer: クライアント接続
+    Client->>TCPServer: TCP接続リクエスト
+    TCPServer->>MainServer: 接続情報を転送
+    MainServer->>MainServer: クライアント登録
 
-    %% フェーズ3：ルーム参加とUDP通信
-    Client->>CoreServer: ユーザー名送信
-    Client->>CoreServer: 部屋作成 / 参加リクエスト
-    CoreServer-->>Client: トークン発行
-    Client->>UDPHandler: UDP接続開始＋トークン送信
+    %% --- 認証・部屋処理フェーズ ---
+    Note over Client, MainServer: 部屋作成／参加
+    Client->>MainServer: ユーザー名と部屋情報送信
+    MainServer-->>Client: トークン返信
+    Client->>UDPHandler: UDP接続 + トークン送信
 
-    %% フェーズ4：リアルタイム通信・終了処理
-    loop 通信中
-        UDPHandler->>CoreServer: メッセージ受信
-        CoreServer-->>UDPHandler: 同ルーム全員へブロードキャスト
-        UDPHandler->>CoreServer: 非アクティブユーザー確認
-        CoreServer->>CoreServer: タイムアウト処理・ルーム管理
+    %% --- メッセージ通信フェーズ ---
+    loop メッセージ通信
+        Client->>UDPHandler: メッセージ送信
+        UDPHandler->>MainServer: メッセージ転送
+        MainServer-->>UDPHandler: 同部屋にブロードキャスト
     end
 
-    %% クライアント終了処理
-    Client->>UDPHandler: 'exit!'メッセージ送信
+    %% --- クライアント終了処理 ---
+    Note over Client, UDPHandler: クライアント退出
+    Client->>UDPHandler: 'exit!'送信
     UDPHandler-->>Client: ソケットクローズ
-    CoreServer->>CoreServer: ユーザー削除・通知
+    MainServer->>MainServer: クライアント削除・部屋管理
 ```
