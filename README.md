@@ -1,3 +1,4 @@
+```mermaid
 sequenceDiagram
     participant メインスレッド
     participant TCPサーバー
@@ -31,3 +32,4 @@ sequenceDiagram
     UDPサーバー処理->>クライアント: ソケットクローズ
     サーバー->>サーバー: タイムアウト削除処理・通知
 
+```
