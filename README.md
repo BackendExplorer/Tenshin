@@ -1,56 +1,33 @@
-## セットアップ方法
+sequenceDiagram
+    participant メインスレッド
+    participant TCPサーバー
+    participant UDPサーバー
+    participant クライアント
+    participant サーバー
+    participant UDPサーバー処理
 
-### 1. 前提条件
-- Go 1.20以上  
-- Node.js 18.x以上  
-- npm または yarn  
-- Git  
+    %% サーバー起動
+    メインスレッド->>TCPサーバー: TCPサーバー起動
+    メインスレッド->>UDPサーバー: UDPサーバー起動
+    TCPサーバー->>サーバー: クライアント待機
+    クライアント->>TCPサーバー: 接続リクエスト
+    TCPサーバー->>サーバー: クライアント接続受付
+    サーバー->>サーバー: クライアント登録
 
----
+    %% クライアント起動・部屋作成/参加
+    クライアント->>サーバー: ユーザー名送信
+    クライアント->>サーバー: 部屋作成または参加
+    サーバー->>クライアント: トークン送信
+    クライアント->>UDPサーバー処理: UDPクライアント開始＋部屋情報送信
 
-### 2. クローン
+    %% メッセージ処理
+    UDPサーバー処理->>サーバー: クライアントからメッセージ受信
+    サーバー->>UDPサーバー処理: パースしてルームへブロードキャスト
+    UDPサーバー処理->>サーバー: 非アクティブ監視
+    サーバー->>サーバー: タイムアウト処理・ルーム管理
 
-```bash
-git clone https://github.com/yourname/Pokemon-Viewer-Golang.git
-```
-
-```bash
-cd Pokemon-Viewer-Golang
-```
-
----
-
-### 3. フロントエンドの起動
-
-```bash
-cd frontend
-```
-
-```bash
-npm install
-```
-
-```bash
-npm run dev
-```
-
----
-
-### 4. バックエンドの起動
-
-```bash
-cd backend
-```
-
-```bash
-go run main.go
-```
-
----
-
-### 5. アクセス
-
-[http://localhost:5173](http://localhost:5173) でアクセス可能です。
-
----
+    %% クライアント終了
+    クライアント->>UDPサーバー処理: 'exit!'送信
+    UDPサーバー処理->>クライアント: ソケットクローズ
+    サーバー->>サーバー: タイムアウト削除処理・通知
 
