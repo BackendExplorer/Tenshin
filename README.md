@@ -1,44 +1,39 @@
 ```mermaid
 sequenceDiagram
-    participant メインスレッド
-    participant TCPサーバー
-    participant UDPサーバー
-    participant クライアント
-    participant サーバー
-    participant UDP処理スレッド
+    %% 登場人物
+    participant MainThread as メインスレッド
+    participant TCPServer as TCPサーバー
+    participant UDPServer as UDPサーバー
+    participant Client as クライアント
+    participant CoreServer as サーバー
+    participant UDPHandler as UDP処理スレッド
 
-    %% サーバー起動処理
-    メインスレッド->>TCPサーバー: TCPサーバー起動
-    メインスレッド->>UDPサーバー: UDPサーバー起動
-    TCPサーバー->>サーバー: クライアント接続待機
+    %% フェーズ1：サーバー起動
+    MainThread->>TCPServer: 起動
+    MainThread->>UDPServer: 起動
+    TCPServer->>CoreServer: クライアント待機状態にする
 
-    %% クライアント接続と認証
-    クライアント->>TCPサーバー: TCP接続リクエスト
-    TCPサーバー->>サーバー: クライアント接続受付
-    サーバー->>サーバー: クライアントを登録
+    %% フェーズ2：クライアント接続
+    Client->>TCPServer: TCP接続要求
+    TCPServer->>CoreServer: 接続受付
+    CoreServer->>CoreServer: クライアント情報を登録
 
-    %% クライアントの部屋作成または参加
-    クライアント->>サーバー: ユーザー名を送信
-    alt 部屋を作成
-        クライアント->>サーバー: 部屋作成リクエスト
-    else 部屋に参加
-        クライアント->>サーバー: 参加リクエスト
-    end
-    サーバー->>クライアント: 認証トークンを送信
+    %% フェーズ3：ルーム参加とUDP通信
+    Client->>CoreServer: ユーザー名送信
+    Client->>CoreServer: 部屋作成 / 参加リクエスト
+    CoreServer-->>Client: トークン発行
+    Client->>UDPHandler: UDP接続開始＋トークン送信
 
-    %% UDP通信開始
-    クライアント->>UDP処理スレッド: UDP開始＋部屋情報送信
-
-    %% メッセージ送受信処理
+    %% フェーズ4：リアルタイム通信・終了処理
     loop 通信中
-        UDP処理スレッド->>サーバー: クライアントメッセージ受信
-        サーバー->>UDP処理スレッド: ルーム内にブロードキャスト
-        UDP処理スレッド->>サーバー: 非アクティブクライアント監視
-        サーバー->>サーバー: タイムアウト・ルーム管理
+        UDPHandler->>CoreServer: メッセージ受信
+        CoreServer-->>UDPHandler: 同ルーム全員へブロードキャスト
+        UDPHandler->>CoreServer: 非アクティブユーザー確認
+        CoreServer->>CoreServer: タイムアウト処理・ルーム管理
     end
 
     %% クライアント終了処理
-    クライアント->>UDP処理スレッド: 'exit!'メッセージ送信
-    UDP処理スレッド->>クライアント: ソケットをクローズ
-    サーバー->>サーバー: クライアント削除・通知
+    Client->>UDPHandler: 'exit!'メッセージ送信
+    UDPHandler-->>Client: ソケットクローズ
+    CoreServer->>CoreServer: ユーザー削除・通知
 ```
