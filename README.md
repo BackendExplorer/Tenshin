@@ -1,5 +1,103 @@
 ## バイトの情報
 
+<style>
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 10px;
+  width: 100%;
+}
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.column {
+  flex: 1;
+  min-width: 300px;
+}
+</style>
+
+<div class="container">
+  <div class="column">
+    <div class="card">
+
+### RoomNameSize
+
+| データ名 | RoomNameSize |
+|----------|----------------|
+| 説明     | ルームの許容人数 |
+| バイト数 | 1バイト         |
+| 型       | byte_int(0–255) |
+
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+
+### Operation
+
+| データ名 | Operation        |
+|----------|------------------|
+| 説明     | 操作コードのこと   |
+| 状態1    | ルームを作成する   |
+| 状態2    | ルームに参加したい |
+| バイト数 | 1バイト           |
+| 型       | byte_int(0–255)   |
+
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="column">
+    <div class="card">
+
+### State
+
+| データ名 | State              |
+|----------|---------------------|
+| 説明     | 現在の状態のこと     |
+| 状態0    | サーバの初期化（ルーム作成要求） |
+| 状態1    | リクエストの応答（ルーム作成中） |
+| 状態2    | リクエストの完了（ルーム作成完了） |
+| バイト数 | 1バイト             |
+| 型       | byte_int(0–255)     |
+
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+
+### OperationPayloadSize
+
+| データ名 | OperationPayloadSize                  |
+|----------|----------------------------------------|
+| 説明     | データ本体のこと                         |
+| 内容     | RoomName(8バイト) + OperationPayload(21バイト) |
+| バイト数 | 29バイト                                |
+| 型       | byte_str                                |
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+## バイトの情報
+
 <table>
   <tr>
     <td style="vertical-align: top; padding-right: 40px;">
