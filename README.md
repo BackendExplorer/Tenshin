@@ -44,35 +44,36 @@ sequenceDiagram
 
 
 ```mermaid
-sequenceDiagram
-    actor ユーザー
-    participant ターミナル
+graph TD
+    A[クライアントプログラム起動] --> B[ユーザー名を入力]
+    B --> C[例：Taro]
+    C --> D[モード選択<br/>（1: ルーム作成、2: ルーム参加）]
 
-    ユーザー->>ターミナル: クライアントプログラム起動
-    ターミナル-->>ユーザー: ユーザー名を入力してください
-    ユーザー->>ターミナル: Taro
+    D --> E1[ルーム作成]
+    E1 --> F1[ルーム名を入力<br/>例：MyRoom]
+    F1 --> G1[「MyRoom」を作成しました]
 
-    ターミナル-->>ユーザー: モード選択 (1:作成, 2:参加)
-    ユーザー->>ターミナル: 1 または 2
+    D --> E2[ルーム参加]
+    E2 --> F2[利用可能なルーム一覧表示]
+    F2 --> G2[ルーム名を入力<br/>例：MyRoom]
+    G2 --> H2[「MyRoom」に参加しました]
 
-    alt ルーム作成
-        ターミナル-->>ユーザー: ルーム名を入力してください
-        ユーザー->>ターミナル: MyRoom
-        ターミナル-->>ユーザー: 「MyRoom」を作成しました
-    else ルーム参加
-        ターミナル-->>ユーザー: 利用可能なルーム一覧を表示
-        ターミナル-->>ユーザー: 参加するルーム名を入力してください
-        ユーザー->>ターミナル: MyRoom
-        ターミナル-->>ユーザー: 「MyRoom」に参加しました
-    end
+    G1 --> I[ルーム情報を内部で保持]
+    H2 --> I
 
-    note over ターミナル: ルーム情報を内部で保持
+    I --> J[チャット開始]
 
-    ターミナル-->>ユーザー: チャットを開始します
-    loop チャット中
-        ユーザー->>ターミナル: メッセージ入力
-        ターミナル-->>ユーザー: 自分 & 他ユーザーのメッセージ表示
-    end
+    J --> K[メッセージ入力]
+    K --> L[送信・受信メッセージ表示]
+    L --> K
 
-    note over ターミナル: ユーザーが終了するまで続く
+    style A fill:#f9f,stroke:#333,stroke-width:1px
+    style D fill:#ccf,stroke:#333,stroke-width:1px
+    style E1 fill:#cff
+    style E2 fill:#cff
+    style I fill:#eee
+    style J fill:#cfc
+    style L fill:#fff
+
+    click A "https://example.com/start" "_blank"
 ```
