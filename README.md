@@ -1,27 +1,8 @@
 ## バイトの情報
 
-<style>
-.card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 12px;
-  margin: 10px;
-  width: 100%;
-}
-.container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-.column {
-  flex: 1;
-  min-width: 300px;
-}
-</style>
-
-<div class="container">
-  <div class="column">
-    <div class="card">
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 40px;">
 
 ### RoomNameSize
 
@@ -31,11 +12,8 @@
 | バイト数 | 1バイト         |
 | 型       | byte_int(0–255) |
 
-    </div>
-  </div>
-
-  <div class="column">
-    <div class="card">
+</td>
+<td style="vertical-align: top; padding-left: 40px;">
 
 ### Operation
 
@@ -47,13 +25,15 @@
 | バイト数 | 1バイト           |
 | 型       | byte_int(0–255)   |
 
-    </div>
-  </div>
-</div>
+</td>
+  </tr>
+</table>
 
-<div class="container">
-  <div class="column">
-    <div class="card">
+<br>
+
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 40px;">
 
 ### State
 
@@ -66,11 +46,8 @@
 | バイト数 | 1バイト             |
 | 型       | byte_int(0–255)     |
 
-    </div>
-  </div>
-
-  <div class="column">
-    <div class="card">
+</td>
+<td style="vertical-align: top; padding-left: 40px;">
 
 ### OperationPayloadSize
 
@@ -81,15 +58,9 @@
 | バイト数 | 29バイト                                |
 | 型       | byte_str                                |
 
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
+</td>
+  </tr>
+</table>
 
 
 
