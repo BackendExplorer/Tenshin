@@ -44,36 +44,20 @@ sequenceDiagram
 
 
 ```mermaid
-graph TD
-    A[クライアントプログラム起動] --> B[ユーザー名を入力]
-    B --> C[例：Taro]
-    C --> D[モード選択<br/>（1: ルーム作成、2: ルーム参加）]
+sequenceDiagram
+    actor ユーザー
+    participant クライアント as クライアントプログラム
 
-    D --> E1[ルーム作成]
-    E1 --> F1[ルーム名を入力<br/>例：MyRoom]
-    F1 --> G1[「MyRoom」を作成しました]
-
-    D --> E2[ルーム参加]
-    E2 --> F2[利用可能なルーム一覧表示]
-    F2 --> G2[ルーム名を入力<br/>例：MyRoom]
-    G2 --> H2[「MyRoom」に参加しました]
-
-    G1 --> I[ルーム情報を内部で保持]
-    H2 --> I
-
-    I --> J[チャット開始]
-
-    J --> K[メッセージ入力]
-    K --> L[送信・受信メッセージ表示]
-    L --> K
-
-    style A fill:#f9f,stroke:#333,stroke-width:1px
-    style D fill:#ccf,stroke:#333,stroke-width:1px
-    style E1 fill:#cff
-    style E2 fill:#cff
-    style I fill:#eee
-    style J fill:#cfc
-    style L fill:#fff
-
-    click A "https://example.com/start" "_blank"
+    ユーザー->>クライアント: ① プログラム起動
+    ユーザー->>クライアント: ② ユーザー名入力
+    ユーザー->>クライアント: ③ ルーム作成 or ルーム参加選択
+    alt ルーム作成の場合
+        ユーザー->>クライアント: ④a ルーム名入力（ルーム作成）
+    else ルーム参加の場合
+        ユーザー->>クライアント: ④b 参加ルーム選択
+    end
+    ユーザー->>クライアント: ⑤ チャット開始
+    loop チャット中
+        ユーザー->>クライアント: ⑥ メッセージ入力
+    end
 ```
