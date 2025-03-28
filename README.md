@@ -1,6 +1,11 @@
 ```mermaid
 graph TD
 
+%% 描画方向を左→右へ強制
+%% これが最重要ポイント！
+%% ↓この記述で全体を左→右に描画
+graph LR
+
 %% スタイル定義
 classDef server fill:#e3f2fd,stroke:#1e88e5,stroke-width:2px
 classDef client fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
@@ -81,10 +86,8 @@ D1 -->|サーバーから通知| D4 --> D5
 class D1,D2,D3,D4,D5 warning
 end
 
-%% 全体連携
-A1 --> B1
-B1 --> C1
-C1 --> D1
+%% 全体の左→右連携フロー
+A1 --> B1 --> C1 --> D1
 
 ```
 
