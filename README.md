@@ -1,5 +1,5 @@
 ```mermaid
-graph LR
+graph TD
 
 %% スタイル定義
 classDef server fill:#e3f2fd,stroke:#1e88e5,stroke-width:2px
@@ -81,8 +81,9 @@ D1 -->|サーバーから通知| D4 --> D5
 class D1,D2,D3,D4,D5 warning
 end
 
-%% 左→右フロー制御
+%% 処理の全体接続（縦方向）
 A1 --> B1 --> C1 --> D1
+
 
 ```
 
