@@ -81,8 +81,16 @@ D1 -->|サーバーから通知| D4 --> D5
 class D1,D2,D3,D4,D5 warning
 end
 
-%% 処理の全体接続（縦方向）
-A1 --> B1 --> C1 --> D1
+%% 左→右配置用ダミーノード
+Start --> A1
+A1 --> Dummy1 --> B1
+B1 --> Dummy2 --> C1
+C1 --> Dummy3 --> D1
+
+style Start fill:#ffffff,stroke:#ffffff
+style Dummy1 fill:#ffffff,stroke:#ffffff
+style Dummy2 fill:#ffffff,stroke:#ffffff
+style Dummy3 fill:#ffffff,stroke:#ffffff
 
 
 ```
