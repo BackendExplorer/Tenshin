@@ -1,36 +1,35 @@
 ```mermaid
 flowchart TD
     subgraph 初期化
-        A1[FoodItem の準備<br/>(具象クラス定義、CATEGORY定数・静的メソッド)]
-        A2[Person の生成<br/>(Customer、Employee)]
-        A3[Restaurant の構築<br/>(メニュー & スタッフ登録)]
+        A1["FoodItem の準備 (具象クラス定義、CATEGORY定数・静的メソッド)"]
+        A2["Person の生成 (Customer、Employee)"]
+        A3["Restaurant の構築 (メニュー & スタッフ登録)"]
     end
 
     subgraph 顧客注文の開始
-        B1[興味カテゴリの取得<br/>(Customer: interestedCategories())]
-        B2[注文リクエストの受付]
+        B1["興味カテゴリの取得 (Customer: interestedCategories())"]
+        B2["注文リクエストの受付"]
     end
 
     subgraph レジ担当による注文受付
-        C1[order() メソッドの実行<br/>(FoodItem 選択)]
-        C2[注文作成のシミュレーション<br/>("the cashier John created a food order")]
+        C1["order() メソッドの実行 (FoodItem 選択)"]
+        C2["注文作成のシミュレーション (\"the cashier John created a food order\")"]
     end
 
     subgraph FoodOrder の生成と委任
-        D1[FoodOrder の生成<br/>(注文内容: FoodItem リスト)]
-        D2[シェフへの委任<br/>(調理: "the chef William cooked a Pizza")]
+        D1["FoodOrder の生成 (注文内容: FoodItem リスト)"]
+        D2["シェフへの委任 (調理: \"the chef William cooked a Pizza\")"]
     end
 
     subgraph 請求書（Invoice）の生成
-        E1[Invoice の作成]
-        E2[Invoice の内容<br/>(最終価格、注文時間、調理時間)]
+        E1["Invoice の作成"]
+        E2["Invoice の内容 (最終価格、注文時間、調理時間)"]
     end
 
     subgraph 注文処理の完了
-        F[order() の返り値<br/>(生成された Invoice オブジェクト)]
+        F["order() の返り値 (生成された Invoice オブジェクト)"]
     end
 
-    %% フローの接続
     A1 --> A2
     A2 --> A3
     A3 --> B1
