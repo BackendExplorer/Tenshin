@@ -13,12 +13,12 @@ flowchart TD
 
     subgraph レジ担当による注文受付
         C1["order() メソッドの実行 (FoodItem 選択)"]
-        C2["注文作成のシミュレーション (the cashier John created a food order)"]
+        C2["注文作成のシミュレーション ('the cashier John created a food order')"]
     end
 
     subgraph FoodOrder の生成と委任
         D1["FoodOrder の生成 (注文内容: FoodItem リスト)"]
-        D2["シェフへの委任 (調理: the chef William cooked a Pizza)"]
+        D2["シェフへの委任 (調理: 'the chef William cooked a Pizza')"]
     end
 
     subgraph 請求書（Invoice）の生成
