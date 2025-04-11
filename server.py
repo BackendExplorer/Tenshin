@@ -93,21 +93,33 @@ class TCPServer:
                 print("Closing current connection")
                 connection.close()
 
-    # クライアントとの通信を処理し、メタデータ受信、ファイル受信、メディア変換、ファイル送信を行う。
+    # クライアントとの通信を処理するメインフロー
     def handle_client(self, connection):
+        # 1. ヘッダーを受信し、ファイルサイズなどを解析
         header, file_size = self.receive_header(connection)
         if file_size == 0:
             raise Exception('No data to read from client.')
 
+        # 2. メタデータ(JSON)とメディアタイプを受信
         json_file, media_type = self.receive_metadata(connection, header)
+
+        # 3. ファイルを受信して保存
         input_file_path = self.receive_file(connection, json_file['file_name'], file_size)
 
-        connection.send(bytes([0x00]))  # success
+        # 4. 成功ステータスを送信（ここを関数化）
+        self.send_success_status(connection)
 
-        output_file_path = self.processor.process(json_file, input_file_path, json_file['file_name'])
+        # 5. メディアを処理（ここを関数化）
+        output_file_path = self.process_received_file(json_file, input_file_path)
+
+        # 6. 結果ファイルをクライアントに送信
         self.send_file(connection, output_file_path)
 
-    # クライアントから送信されたヘッダー部を受信し、JSONの長さ、メディアタイプの長さ、およびファイルサイズを抽出する。
+    # ===========================================================================
+    # 以下、既存機能を分割・リファクタリングしたメソッド群
+    # ===========================================================================
+
+    # ヘッダー部の受信と解析
     def receive_header(self, connection):
         header = connection.recv(8)
         json_length = int.from_bytes(header[0:2], "big")
@@ -115,7 +127,7 @@ class TCPServer:
         file_size = int.from_bytes(header[3:8], "big")
         return (json_length, media_type_length), file_size
 
-    # ヘッダー情報に基づいて、メタデータ部分（JSONデータおよびメディアタイプ）を受信・解析する。
+    # メタデータ(JSON + メディアタイプ)を受信・解析
     def receive_metadata(self, connection, header):
         json_length, media_type_length = header
         body = connection.recv(json_length + media_type_length)
@@ -123,7 +135,7 @@ class TCPServer:
         media_type = body[json_length:].decode("utf-8")
         return json_file, media_type
 
-    # クライアントからファイルデータをチャンク単位で受信し、指定されたパスに保存する。
+    # ファイルデータを受信・保存
     def receive_file(self, connection, file_name, file_size):
         input_file_path = os.path.join(self.processor.dpath, file_name)
         with open(input_file_path, 'wb+') as f:
@@ -135,7 +147,15 @@ class TCPServer:
         print('Finished downloading the file from client.')
         return input_file_path
 
-    # クライアントに対してエラーメッセージをJSON形式で送信する。
+    # 成功ステータスを送信する（0x00 のバイトを返す）
+    def send_success_status(self, connection):
+        connection.send(bytes([0x00]))
+
+    # 受信ファイルを MediaProcessor に処理させる
+    def process_received_file(self, json_file, input_file_path):
+        return self.processor.process(json_file, input_file_path, json_file['file_name'])
+
+    # エラーが起きた場合にエラーレスポンスを送信
     def send_error_response(self, connection, error_message):
         json_file = {
             'error': True,
@@ -146,7 +166,7 @@ class TCPServer:
         connection.sendall(header)
         connection.sendall(json_bytes)
 
-    # 変換済みファイルをクライアントに送信するために、ファイル情報とファイル本体を順次送信する。
+    # 処理後のファイルをクライアントへ送信
     def send_file(self, connection, output_file_path):
         media_type = os.path.splitext(output_file_path)[1]
         media_type_bytes = media_type.encode('utf-8')
@@ -168,9 +188,13 @@ class TCPServer:
                 print("Sending...")
                 connection.send(data)
 
-    # プロトコル仕様に沿ったヘッダー部を生成する。
+    # プロトコル仕様に沿ったヘッダー部を生成
     def protocol_header(self, json_length, media_type_length, payload_length):
-        return json_length.to_bytes(2, "big") + media_type_length.to_bytes(1, "big") + payload_length.to_bytes(5, "big")
+        return (
+            json_length.to_bytes(2, "big") +
+            media_type_length.to_bytes(1, "big") +
+            payload_length.to_bytes(5, "big")
+        )
 
 
 if __name__ == "__main__":
